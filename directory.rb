@@ -40,8 +40,8 @@ def print(students)
 
   #Q4. prints all students using while or until: made students => @students
   q4_loop = 0
-  until q4_loop == @students.length
-    puts "#{q4_loop+1}. #{@students[q4_loop][:name]} (#{@students[q4_loop][:cohort]} cohort)"#Q6 = .center(40)
+  until q4_loop == students.length
+    puts "#{q4_loop+1}. #{students[q4_loop][:name]} (#{students[q4_loop][:cohort]} cohort)"#Q6 = .center(40)
     q4_loop += 1
   end
 end
@@ -53,10 +53,18 @@ end
 
 
 @students = input_students
-puts @students.inspect
+array_to_sort = []
+
+#Q8: grouped by cohorts:
+@students.collect.with_index { |stud, index| array_to_sort << ["#{index}", "#{stud[:cohort]}"] }
+array_to_sort = array_to_sort.sort_by { |a| a[1] }
+sorted_array = []
+array_to_sort.each do |x|
+  sorted_array << @students[x[0].to_i]
+end
 
 print_header
-print(@students)
+print(sorted_array)
 print_footer(@students)
 
 
