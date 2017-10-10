@@ -1,6 +1,6 @@
+@students = []
 # a method so i don't have to write out students each time:
-def villians_list
-  villians = [
+@villians = [
     {name: "Dr. Hannibal Lecter", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
     {name: "Darth Vader", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
     {name: "Nurse Ratched", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
@@ -13,38 +13,34 @@ def villians_list
     {name: "Joffrey Baratheon", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
     {name: "Norman Bates", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"}
   ]
-  return villians
-end
 
 
-
-def input_students(villians)
+def input_students
   puts "Please enter the name and cohort of the students"
   puts "to finish, just hit return twise"
-  students = []
   puts "Name?"
   name = gets.strip
 
   if name == 'v'
-    students = villians
+    @students = @villians
+  elsif name == ''
+    @students = []
   else
     while !name.empty? do
       puts "Cohort?"
       cohort = gets.strip
       cohort = "default" if cohort == ""
-      students << {name: name, cohort: cohort.to_sym, hobbies: "default", country_of_birth: "default", height: "default"}
-      puts "now we have #{students.count} students"
-
+      @students << {name: name, cohort: cohort.to_sym, hobbies: "default", country_of_birth: "default", height: "default"}
+      puts "now we have #{@students.count} students"
       puts "Name?"
       name = gets.strip
     end
   end
-  students
 end
 
 
-def print_header(students)
-  if students.length < 1
+def print_header
+  if @students.length < 1
   else
     puts "The students of Villains Academy"
     puts "-------------"
@@ -52,7 +48,7 @@ def print_header(students)
 end
 
 
-def print(students)
+def print_students_list
   #Q1. print a number before the name:  .each_with_index
   #students.each_with_index do |students, index|
     #Q2. only print the students whose name begins with a specific letter:
@@ -65,45 +61,64 @@ def print(students)
     #puts "#{index}. #{students[:name]} (#{students[:cohort]} cohort)"
   #end
 
+  sort_it
+
   #Q4. prints all students using while or until: made students => @students
   q4_loop = 0
-  until q4_loop == students.length
-    puts "#{q4_loop+1}. #{students[q4_loop][:name]} (#{students[q4_loop][:cohort]} cohort)"#Q6 = .center(40)
+  until q4_loop == @students.length
+    puts "#{q4_loop+1}. #{@students[q4_loop][:name]} (#{@students[q4_loop][:cohort]} cohort)"#Q6 = .center(40)
     q4_loop += 1
   end
 end
 
 
-def print_footer(students)
-  if students.length < 1
+def print_footer
+  if @students.length < 1
     puts "We don't have any students"
-  elsif students.length == 1
-    puts "Overall, we have #{students.length} great student"
+  elsif @students.length == 1
+    puts "Overall, we have #{@students.length} great student"
   else
-    puts "Overall, we have #{students.length} great students"
+    puts "Overall, we have #{@students.length} great students"
   end
 end
-
-#so i don't have to input students
-
-#@students = input_students(vill)
 
 
 #Q8: grouped by cohorts:
-def sort_it(students)
+def sort_it
   array_to_sort = []
-  students.collect.with_index { |stud, index| array_to_sort << ["#{index}", "#{stud[:cohort]}"] }
+  @students.collect.with_index { |stud, index| array_to_sort << ["#{index}", "#{stud[:cohort]}"] }
   array_to_sort = array_to_sort.sort_by { |a| a[1] }
   sorted_array = []
   array_to_sort.each do |x|
-    sorted_array << students[x[0].to_i]
+    sorted_array << @students[x[0].to_i]
   end
-  students = sorted_array
-  students
+  @students = sorted_array
 end
 
+def show_students
+  puts "--------------------------------------------------"
+  print_header
+  print_students_list
+  print_footer
+  puts "--------------------------------------------------"
+  puts
+end
 
-def interactive_menu(students, vill)
+def process(selection)
+  case selection
+    when "1"
+      students = input_students
+      puts
+    when "2"
+      show_students
+    when "9"
+      exit # this will cause the program to terminate
+    else
+      puts "I don't know what you meant, try again"
+  end
+end
+
+def interactive_menu
   loop do
     #1. print the menu and ask the user what to do
     puts "1. Input the students"
@@ -112,24 +127,9 @@ def interactive_menu(students, vill)
     # 2. read the input and save it into a variable
     selection = gets.chomp
     # 3. do what the user has asked
-    case selection
-      when "1"
-        students = input_students(vill)
-        puts
-      when "2"
-        puts "--------------------------------------------------"
-        print_header(students)
-        print(students)
-        print_footer(students)
-        puts "--------------------------------------------------"
-        puts
-      when "9"
-        exit # this will cause the program to terminate
-      else
-        puts "I don't know what you meant, try again"
-    end
+    process(selection)
   end
 end
 
-vill = villians_list
-interactive_menu(@students, vill)
+
+interactive_menu
