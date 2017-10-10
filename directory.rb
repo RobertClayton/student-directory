@@ -1,29 +1,56 @@
+# a method so i don't have to write out students each time:
+def villians_list
+  villians = [
+    {name: "Dr. Hannibal Lecter", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "Darth Vader", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "Nurse Ratched", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "Michael Corleone", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "Alex DeLarge", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "The Wicked Witch of the West", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "Terminator", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "Freddy Krueger", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "The Joker", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "Joffrey Baratheon", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
+    {name: "Norman Bates", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"}
+  ]
+  return villians
+end
 
 
-def input_students
+
+def input_students(villians)
   puts "Please enter the name and cohort of the students"
   puts "to finish, just hit return twise"
   students = []
   puts "Name?"
-  name = gets.chomp
-  while !name.empty? do
-    puts "Cohort?"
-    cohort = gets.chomp
-    cohort = "default" if cohort == ""
-    students << {name: name, cohort: cohort.to_sym, hobbies: "default", country_of_birth: "default", height: "default"}
-    puts "now we have #{students.count} students"
+  name = gets.strip
 
-    puts "Name?"
-    name = gets.chomp
+  if name == 'v'
+    students = villians
+  else
+    while !name.empty? do
+      puts "Cohort?"
+      cohort = gets.strip
+      cohort = "default" if cohort == ""
+      students << {name: name, cohort: cohort.to_sym, hobbies: "default", country_of_birth: "default", height: "default"}
+      puts "now we have #{students.count} students"
+
+      puts "Name?"
+      name = gets.strip
+    end
   end
-
   students
 end
 
-def print_header
-  puts "The students of Villains Academy"
-  puts "-------------"
+
+def print_header(students)
+  if students.length < 1
+  else
+    puts "The students of Villains Academy"
+    puts "-------------"
+  end
 end
+
 
 def print(students)
   #Q1. print a number before the name:  .each_with_index
@@ -48,40 +75,61 @@ end
 
 
 def print_footer(students)
-  puts "Overall, we have #{students.length} great students"
+  if students.length < 1
+    puts "We don't have any students"
+  elsif students.length == 1
+    puts "Overall, we have #{students.length} great student"
+  else
+    puts "Overall, we have #{students.length} great students"
+  end
 end
 
+#so i don't have to input students
 
-@students = input_students
-array_to_sort = []
+#@students = input_students(vill)
+
 
 #Q8: grouped by cohorts:
-@students.collect.with_index { |stud, index| array_to_sort << ["#{index}", "#{stud[:cohort]}"] }
-array_to_sort = array_to_sort.sort_by { |a| a[1] }
-sorted_array = []
-array_to_sort.each do |x|
-  sorted_array << @students[x[0].to_i]
+def sort_it(students)
+  array_to_sort = []
+  students.collect.with_index { |stud, index| array_to_sort << ["#{index}", "#{stud[:cohort]}"] }
+  array_to_sort = array_to_sort.sort_by { |a| a[1] }
+  sorted_array = []
+  array_to_sort.each do |x|
+    sorted_array << students[x[0].to_i]
+  end
+  students = sorted_array
+  students
 end
 
-print_header
-print(sorted_array)
-print_footer(@students)
 
+def interactive_menu(students, vill)
+  loop do
+    #1. print the menu and ask the user what to do
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit" # 9 because we'll be adding more items
+    # 2. read the input and save it into a variable
+    selection = gets.chomp
+    # 3. do what the user has asked
+    case selection
+      when "1"
+        students = input_students(vill)
+        puts
+      when "2"
+        puts "--------------------------------------------------"
+        print_header(students)
+        print(students)
+        print_footer(students)
+        puts "--------------------------------------------------"
+        puts
+      when "9"
+        exit # this will cause the program to terminate
+      else
+        puts "I don't know what you meant, try again"
+    end
+  end
+end
 
-
-
-=begin
-students = [
-  {name: "Dr. Hannibal Lecter", cohort: :november},
-  {name: "Darth Vader", cohort: :november},
-  {name: "Nurse Ratched", cohort: :november},
-  {name: "Michael Corleone", cohort: :november},
-  {name: "Alex DeLarge", cohort: :november},
-  {name: "The Wicked Witch of the West", cohort: :november},
-  {name: "Terminator", cohort: :november},
-  {name: "Freddy Krueger", cohort: :november},
-  {name: "The Joker", cohort: :november},
-  {name: "Joffrey Baratheon", cohort: :november},
-  {name: "Norman Bates", cohort: :november}
-]
-=end
+vill = villians_list
+interactive_menu(@students, vill)
