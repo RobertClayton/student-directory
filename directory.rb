@@ -1,18 +1,17 @@
 @students = []
 # a method so i don't have to write out students each time:
-@villians = [
-    {name: "Dr. Hannibal Lecter", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "Darth Vader", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "Nurse Ratched", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "Michael Corleone", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "Alex DeLarge", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "The Wicked Witch of the West", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "Terminator", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "Freddy Krueger", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "The Joker", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "Joffrey Baratheon", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"},
-    {name: "Norman Bates", cohort: "evil".to_sym, hobbies: "default", country_of_birth: "default", height: "default"}
-  ]
+@villians = [ {name: "Dr. Hannibal Lecter", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "Darth Vader", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "Nurse Ratched", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "Michael Corleone", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "Alex DeLarge", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "The Wicked Witch of the West", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "Terminator", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "Freddy Krueger", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "The Joker", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "Joffrey Baratheon", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
+  {name: "Norman Bates", cohort: "evil".to_sym}#, hobbies: "default", country_of_birth: "default", height: "default"}
+]
 
 
 def input_students
@@ -30,7 +29,7 @@ def input_students
       puts "Cohort?"
       cohort = gets.strip
       cohort = "default" if cohort == ""
-      @students << {name: name, cohort: cohort.to_sym, hobbies: "default", country_of_birth: "default", height: "default"}
+      @students << {name: name, cohort: cohort.to_sym}#, hobbies: "default", country_of_birth: "default", height: "default"}
       puts "now we have #{@students.count} students"
       puts "Name?"
       name = gets.strip
@@ -111,6 +110,8 @@ def process(selection)
       puts
     when "2"
       show_students
+    when "3"
+      save_students
     when "9"
       exit # this will cause the program to terminate
     else
@@ -123,12 +124,26 @@ def interactive_menu
     #1. print the menu and ask the user what to do
     puts "1. Input the students"
     puts "2. Show the students"
+    puts "3. Save the list to students.csv"
     puts "9. Exit" # 9 because we'll be adding more items
     # 2. read the input and save it into a variable
     selection = gets.chomp
     # 3. do what the user has asked
     process(selection)
   end
+end
+
+
+def save_students
+  # open the file for writing
+  file = File.open("students.csv", "w")
+  # iterate over the array of students
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  file.close
 end
 
 
