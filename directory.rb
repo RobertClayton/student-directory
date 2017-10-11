@@ -18,7 +18,7 @@ def input_students
   puts "Please enter the name and cohort of the students"
   puts "to finish, just hit return twise"
   puts "Name?"
-  name = gets.strip
+  name = STDIN.gets.strip
 
   if name == 'v'
     @students = @villians
@@ -27,12 +27,12 @@ def input_students
   else
     while !name.empty? do
       puts "Cohort?"
-      cohort = gets.strip
+      cohort = STDIN.gets.strip
       cohort = "default" if cohort == ""
       @students << {name: name, cohort: cohort.to_sym}#, hobbies: "default", country_of_birth: "default", height: "default"}
       puts "now we have #{@students.count} students"
       puts "Name?"
-      name = gets.strip
+      name = STDIN.gets.strip
     end
   end
 end
@@ -130,7 +130,7 @@ def interactive_menu
     puts "4. Load the list from students.csv"
     puts "9. Exit" # 9 because we'll be adding more items
     # 2. read the input and save it into a variable
-    selection = gets.chomp
+    selection = STDIN.gets.chomp
     # 3. do what the user has asked
     process(selection)
   end
@@ -152,16 +152,30 @@ def save_students
   puts "-----"
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? # get out of the method if it isn't given
+  if File.exists?(filename) # if it exists
+    load_students(filename)
+    puts "---------------------------------------------------"
+    puts "Loaded #{@students.count} students from #{filename}"
+    puts "---------------------------------------------------"
+  else # if it doesn't exist
+    puts "---------------------------------"
+    puts "Sorry, #{filename} doesn't exist."
+    puts "---------------------------------"
+    exit # quit the program
+  end
+end
+
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym}
   end
   file.close
-  puts "------"
-  puts "LOADED"
-  puts "------"
 end
 
+try_load_students
 interactive_menu
