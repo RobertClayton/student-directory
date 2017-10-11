@@ -125,6 +125,10 @@ def process(selection)
       select_file("Load")
       load_students
       process_complete
+    when "5"
+      successful_selection("Read Source Code")
+      puts File.read(__FILE__)
+      process_complete
     when "9"
       successful_selection("Exit")
       exit # this will cause the program to terminate
@@ -153,6 +157,7 @@ def interactive_menu
     puts "2. Show the students"
     puts "3. Save the list to students.csv"
     puts "4. Load the list from students.csv"
+    puts "5. Read Source Code"
     puts "9. Exit" # 9 because we'll be adding more items
     # 2. read the input and save it into a variable
     selection = STDIN.gets.chomp
@@ -239,8 +244,13 @@ def append_to_students(name, cohort)
 end
 
 def init
-  #try_load_students
+  try_load_students
   interactive_menu
 end
+
+
+
+
+
 
 init
