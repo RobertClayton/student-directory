@@ -106,20 +106,44 @@ end
 def process(selection)
   case selection
     when "1"
+      successful_selection("Input students")
       students = input_students
+      process_complete
       puts
     when "2"
+      successful_selection("Show current students")
       show_students
+      process_complete
     when "3"
+      successful_selection("Save")
+      select_file("Save")
       save_students
+      process_complete
     when "4"
+      successful_selection("Load")
+      select_file("Load")
       load_students
+      process_complete
     when "9"
+      successful_selection("Exit")
       exit # this will cause the program to terminate
     else
       puts "I don't know what you meant, try again"
   end
 end
+
+def successful_selection(selection)
+  puts "-----------------------------------------"
+  puts "You have selcted to #{selection}"
+  puts "-----------------------------------------"
+end
+def process_complete
+  puts "-----------------"
+  puts "Process complete!"
+  puts "-----------------"
+end
+
+
 
 def interactive_menu
   loop do
@@ -136,21 +160,44 @@ def interactive_menu
   end
 end
 
-
-def save_students
-  # open the file for writing
-  file = File.open("students.csv", "w")
-  # iterate over the array of students
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
-  end
-  file.close
-  puts "-----"
-  puts "SAVED"
-  puts "-----"
+def select_file(action)
+  puts "#{action} to which file? - Just hit enter to select \"students.csv\" by default"
+  filename = gets.chomp
+  return filename
 end
+
+
+def save_students(filename = "students.csv")
+  # open the file for writing
+  File.open("students.csv", "w") do |file|
+    # iterate over the array of students
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
+  end
+  puts "------------------------"
+  puts "SAVED to \"#{filename}\""
+  puts "------------------------"
+end
+
+def load_students(filename = "students.csv")
+  File.open(filename, "r") do |file|
+    file.readlines.each do |line|
+      name, cohort = line.chomp.split(',')
+      append_to_students(name, cohort)
+    end
+  end
+  loaded_message(filename)
+end
+
+def loaded_message(filename)
+  puts "---------------------------------------------------"
+  puts "Loaded #{@students.count} students from #{filename}"
+  puts "---------------------------------------------------"
+end
+
 
 def try_load_students
   filename = ARGV.first # first argument from the command line
@@ -165,23 +212,17 @@ def try_load_students
     puts "---------------------------------"
     exit # quit the program
   end
-  puts "---------------------------------------------------"
-  puts "Loaded #{@students.count} students from #{filename}"
-  puts "---------------------------------------------------"
 end
 
-def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    name, cohort = line.chomp.split(',')
-    append_to_students(name, cohort)
-  end
-  file.close
-end
+
 
 def append_to_students(name, cohort)
   @students << {name: name, cohort: cohort.to_sym}
 end
 
-try_load_students
-interactive_menu
+def init
+  try_load_students
+  interactive_menu
+end
+
+init
