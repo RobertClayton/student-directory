@@ -29,7 +29,7 @@ def input_students
       puts "Cohort?"
       cohort = STDIN.gets.strip
       cohort = "default" if cohort == ""
-      @students << {name: name, cohort: cohort.to_sym}#, hobbies: "default", country_of_birth: "default", height: "default"}
+      append_to_students(name, cohort)
       puts "now we have #{@students.count} students"
       puts "Name?"
       name = STDIN.gets.strip
@@ -172,9 +172,13 @@ def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
+    append_to_students(name, cohort)
   end
   file.close
+end
+
+def append_to_students(name, cohort)
+  @students << {name: name, cohort: cohort.to_sym}
 end
 
 try_load_students
