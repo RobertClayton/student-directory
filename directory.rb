@@ -1,3 +1,4 @@
+require 'csv'
 @students = []
 # a method so i don't have to write out students each time:
 @villians = [ {name: "Dr. Hannibal Lecter", cohort: "evil".to_sym},#, hobbies: "default", country_of_birth: "default", height: "default"},
@@ -167,28 +168,45 @@ def select_file(action)
 end
 
 
-def save_students(filename = "students.csv")
-  # open the file for writing
-  File.open("students.csv", "w") do |file|
-    # iterate over the array of students
+def csv_refactor_save(filename)
+  CSV.open("students.csv", "w") do |file|
     @students.each do |student|
-      student_data = [student[:name], student[:cohort]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
+      file << [student[:name], student[:cohort]]
     end
   end
+end
+
+def save_students(filename = "students.csv")
+  # open the file for writing
+#  File.open("students.csv", "w") do |file|
+#    # iterate over the array of students
+#    @students.each do |student|
+#      student_data = [student[:name], student[:cohort]]
+#      csv_line = student_data.join(",")
+#      file.puts csv_line
+#    end
+#  end
+  csv_refactor_save(filename)
   puts "------------------------"
   puts "SAVED to \"#{filename}\""
   puts "------------------------"
 end
 
-def load_students(filename = "students.csv")
-  File.open(filename, "r") do |file|
-    file.readlines.each do |line|
-      name, cohort = line.chomp.split(',')
-      append_to_students(name, cohort)
-    end
+def csv_refactor_load(filename)
+  CSV.foreach(filename) do |line|
+    name = line[0]; cohort = line[1]
+    append_to_students(name, cohort)
   end
+end
+
+def load_students(filename = "students.csv")
+#  File.open(filename, "r") do |file|
+#    file.readlines.each do |line|
+#      name, cohort = line.chomp.split(',')
+#      append_to_students(name, cohort)
+#    end
+#  end
+  csv_refactor_load(filename)
   loaded_message(filename)
 end
 
@@ -221,7 +239,7 @@ def append_to_students(name, cohort)
 end
 
 def init
-  try_load_students
+  #try_load_students
   interactive_menu
 end
 
